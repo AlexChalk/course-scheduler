@@ -7,7 +7,8 @@
         for a course and whether a user is already signed up for it" 
     (answer-annotations [{:course-name "oop" :limit 4 :registered 3} 
                          {:course-name "fp" :limit 1 :registered 1}] 
-                        ["fp"]) 
+                        {:manager? false
+                         :taking-now ["fp"]})
     =>
 
     '({:course-name "oop" :limit 4 :registered 3 
@@ -56,7 +57,8 @@
     (annotate [{:course-name "oop" :limit 4 :registered 3} 
                {:course-name "fp" :limit 1 :registered 1} 
                {:course-name "tdd" :limit 2 :registered 0}] 
-              ["fp"] 2 false) 
+              {:manager? false :taking-now ["fp"]}
+              2) 
     =>
 
     '({:course-name "oop", :limit 4, :registered 3, :full? false, 
@@ -119,7 +121,8 @@
                          :morning? false} 
                         {:course-name "tdd" :limit 2 :registered 0, 
                          :morning? true}]
-              ["fp"] 2 false) 
+                       {:manager? false :taking-now ["fp"]}
+                       2) 
     =>
 
     '({:course-name "fp", :registered 1, :already-in? true, 
@@ -133,7 +136,8 @@
     (solution [{:course-name "oop" :limit 4 :registered 3, :morning? true} 
                {:course-name "fp" :limit 1 :registered 1, :morning? false} 
                {:course-name "tdd" :limit 2 :registered 0, :morning? true}]
-              ["fp"] 2 false) 
+              {:manager? false :taking-now ["fp"]}
+              2) 
     =>
 
       '([{:course-name "oop", :registered 3, :already-in? false, 
@@ -147,7 +151,8 @@
     (solution [{:course-name "oop" :limit 4 :registered 3, :morning? true} 
                {:course-name "fp" :limit 1 :registered 0, :morning? false} 
                {:course-name "tdd" :limit 2 :registered 0, :morning? true}]
-              ["oop"] 2 true) 
+              {:manager? true :taking-now ["oop"]}
+              2) 
     =>
 
     '(({:course-name "oop", :registered 3, :already-in? true, 
