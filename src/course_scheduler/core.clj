@@ -22,7 +22,7 @@
          courses)))
 
 (def note-unavailability
-  (fn [courses instructor-count]
+  (fn [courses instructor-count is-manager]
     (let [out-of-instructors?
           (= instructor-count
              (count (filter (fn [course] (not (:empty? course)))
@@ -31,15 +31,17 @@
              (assoc course
                     :unavailable? (or (:full? course)
                                       (and out-of-instructors?
-                                           (:empty? course)))))
+                                           (:empty? course))
+                                      (and is-manager
+                                           (not (:morning? course)))))) 
            courses))))
 
 (def annotate
-  (fn [courses registrants-courses instructor-count]
+  (fn [courses registrants-courses instructor-count is-manager]
     (-> courses
         (answer-annotations registrants-courses)
         domain-annotations
-        (note-unavailability instructor-count))))
+        (note-unavailability instructor-count is-manager))))
 
 
 (def separate
@@ -61,15 +63,15 @@
 
 
 (def half-day-solution
-  (fn [courses registrants-courses instructor-count]
+  (fn [courses registrants-courses instructor-count is-manager]
     (-> courses
-        (annotate registrants-courses instructor-count)
+        (annotate registrants-courses instructor-count is-manager)
         visible-courses
         ((fn [courses] (sort-by :course-name courses)))
         final-shape)))
 
 (def solution
-  (fn [courses registrants-courses instructor-count]
+  (fn [courses registrants-courses instructor-count is-manager]
     (map (fn [courses]
-           (half-day-solution courses registrants-courses instructor-count))
+           (half-day-solution courses registrants-courses instructor-count is-manager))
          (separate :morning? courses))))

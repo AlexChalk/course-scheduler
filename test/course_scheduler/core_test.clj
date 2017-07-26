@@ -33,7 +33,7 @@
         no more instructors"
     (note-unavailability [{:full? false, :empty? false}
                           {:full? false, :empty? true}
-                          {:full? true, :empty? false}] 3)
+                          {:full? true, :empty? false}] 3 false)
     =>
 
    '({:full? false, :empty? false, :unavailable? false}
@@ -42,7 +42,7 @@
 
     (note-unavailability [{:full? false, :empty? false}
                           {:full? false, :empty? true}
-                          {:full? true, :empty? false}] 2)
+                          {:full? true, :empty? false}] 2 false)
     =>
 
     '({:full? false, :empty? false, :unavailable? false}
@@ -56,7 +56,7 @@
     (annotate [{:course-name "oop" :limit 4 :registered 3} 
                {:course-name "fp" :limit 1 :registered 1} 
                {:course-name "tdd" :limit 2 :registered 0}] 
-              ["fp"] 2) 
+              ["fp"] 2 false) 
     =>
 
     '({:course-name "oop", :limit 4, :registered 3, :full? false, 
@@ -119,7 +119,7 @@
                          :morning? false} 
                         {:course-name "tdd" :limit 2 :registered 0, 
                          :morning? true}]
-              ["fp"] 2) 
+              ["fp"] 2 false) 
     =>
 
     '({:course-name "fp", :registered 1, :already-in? true, 
@@ -133,7 +133,7 @@
     (solution [{:course-name "oop" :limit 4 :registered 3, :morning? true} 
                {:course-name "fp" :limit 1 :registered 1, :morning? false} 
                {:course-name "tdd" :limit 2 :registered 0, :morning? true}]
-              ["fp"] 2) 
+              ["fp"] 2 false) 
     =>
 
       '([{:course-name "oop", :registered 3, :already-in? false, 
@@ -141,4 +141,16 @@
          {:course-name "tdd", :registered 0, :already-in? false, 
           :spaces-left 2, :morning? true}]
         [{:course-name "fp", :registered 1, :already-in? true, 
-          :spaces-left 0, :morning? false}])))
+          :spaces-left 0, :morning? false}]))
+
+  (fact "it doesn't show afternoon courses to managers"
+    (solution [{:course-name "oop" :limit 4 :registered 3, :morning? true} 
+               {:course-name "fp" :limit 1 :registered 0, :morning? false} 
+               {:course-name "tdd" :limit 2 :registered 0, :morning? true}]
+              ["oop"] 2 true) 
+    =>
+
+    '(({:course-name "oop", :registered 3, :already-in? true, 
+        :spaces-left 1, :morning? true}
+       {:course-name "tdd", :registered 0, :already-in? false, 
+        :spaces-left 2, :morning? true}) ())))
